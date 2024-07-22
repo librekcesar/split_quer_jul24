@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+<head>
+    <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css"/>
+    
+    <!-- Librerías para llamar la función cluster map -->
+    <!--
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.5.0/MarkerCluster.Default.css" />
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.5.0/leaflet.markercluster.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    -->
+
+    <!-- Script para cargar el archivo GeoJSON -->
+    <script type="text/javascript" src="QER1_v63_copiacopia2.js"></script>
+    <!-- Scripts y estilos para la búsqueda en el mapa -->
+   
+    
+    <!-- Estilos para el mapa -->
+    <style>
+        #map { 
+            width: 100%;
+            height: 900px;
+            box-shadow: 5px 5px 5px #888;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        // Inicializar el mapa
+        var map = L.map("map").setView([20.506, -100.218], 11);
+        
+        // Añadir capa de OpenStreetMap
+        L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+            maxZoom: 18
+        }).addTo(map);
+        
+        // Función para asignar colores según la categoría
+        function getColor(proveedor) {
+            switch (proveedor) {
+                case 'yarto': return '#EC2E28';
+                case 'peregrina': return '#E9EC28';
+                case 'trujillo': return '285AEC';
+                default: return '#00FF00';
+            }
+        }
+
+        // Función para definir el estilo de cada feature
+        function style(feature) {
+            return {
+                fillColor: getColor(feature.properties.proveedor),
+                weight: 2,
+                opacity: 1,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 0.5
+            };
+        }
+
+        // Función para los popups
+        function onEachFeature(feature, layer) {
+            if (feature.properties) {
+                layer.bindPopup('<p> Proveedor: ' + feature.properties.proveedor + '</p><p>Total de asignados: ' + feature.properties.total_asignados + '</p><p>Zonificación: ' + feature.properties.zonificacion + '</p>');
+            }
+        }
+
+        
+
+        // Cargar la capa GeoJSON con estilo y popups
+        var layerGroup = L.geoJSON(qer5, {
+            style: style,
+            onEachFeature: onEachFeature
+        }).addTo(map);
+
+
+       
+
+
+    </script>
+</body> 
+</html>
